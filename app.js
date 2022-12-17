@@ -12,9 +12,9 @@ const ItemCtrl = (function () {
   // Data Structure / State
   const data = {
     items: [
-      { id: 0, name: "Stake Dinner", calories: 1200 },
-      { id: 1, name: "Cookie", calories: 300 },
-      { id: 2, name: "Egg", calories: 200 },
+      //   { id: 0, name: "Stake Dinner", calories: 1200 },
+      //   { id: 1, name: "Cookie", calories: 300 },
+      //   { id: 2, name: "Egg", calories: 200 },
     ],
     currentItem: null,
     totalCalories: 0,
@@ -78,6 +78,26 @@ const UICtrl = (function () {
         calories: document.querySelector(UISelectors.itemCalories).value,
       }
     },
+    addListItem: function (item) {
+      document.querySelector(UISelectors.itemList).style.display = "block"
+      const li = document.createElement("li")
+      li.className = "collection-item"
+      li.id = `item-${item.id}`
+      li.innerHTML = `<strong>${item.name}: </strong> <em>${item.calories} Calories</em>
+      <a href="#" class="secondary-content">
+          <i class="edit-item fa fa-pencil"></i>
+      </a>`
+      document
+        .querySelector(UISelectors.itemList)
+        .insertAdjacentElement("beforeend", li)
+    },
+    clearInput: function () {
+      document.querySelector(UISelectors.itemName).value = ""
+      document.querySelector(UISelectors.itemCalories).value = ""
+    },
+    hideList: function () {
+      document.querySelector(UISelectors.itemList).style.display = "none"
+    },
   }
 })()
 
@@ -96,6 +116,9 @@ const App = (function (ItemCtrl, UICtrl) {
 
     if (input.name !== "" && input.calories !== "") {
       const newItem = ItemCtrl.addItem(input.name, input.calories)
+      UICtrl.addListItem(newItem)
+
+      UICtrl.clearInput()
     }
     e.preventDefault()
   }
@@ -103,7 +126,12 @@ const App = (function (ItemCtrl, UICtrl) {
   return {
     init: function () {
       const items = ItemCtrl.getItems()
-      UICtrl.populateItemList(items)
+
+      if (items.length == 0) {
+        UICtrl.hideList()
+      } else {
+        UICtrl.populateItemList(items)
+      }
 
       loadEventListners()
     },
