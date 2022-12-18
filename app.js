@@ -1,4 +1,32 @@
 // Storage Controller
+const StorageCtrl = (function () {
+  return {
+    storeItem: function (item) {
+      let items
+
+      if (localStorage.getItem("items") === null) {
+        items = []
+        items.push(item)
+        localStorage.setItem("items", JSON.stringify(items))
+      } else {
+        items = JSON.parse(localStorage.getItem("items"))
+        items.push(item)
+        localStorage.setItem("items", JSON.stringify(items))
+      }
+    },
+    getItemsFromStorage: function () {
+      let items
+
+      if (localStorage.getItem("items") === null) {
+        items = []
+      } else {
+        items = JSON.parse(localStorage.getItem("items"))
+      }
+
+      return items
+    },
+  }
+})()
 
 // Item Controller
 const ItemCtrl = (function () {
@@ -11,11 +39,12 @@ const ItemCtrl = (function () {
 
   // Data Structure / State
   const data = {
-    items: [
-      //   { id: 0, name: "Stake Dinner", calories: 1200 },
-      //   { id: 1, name: "Cookie", calories: 300 },
-      //   { id: 2, name: "Egg", calories: 200 },
-    ],
+    // items: [
+    //   //   { id: 0, name: "Stake Dinner", calories: 1200 },
+    //   //   { id: 1, name: "Cookie", calories: 300 },
+    //   //   { id: 2, name: "Egg", calories: 200 },
+    // ],
+    items: StorageCtrl.getItemsFromStorage(),
     currentItem: null,
     totalCalories: 0,
   }
@@ -55,7 +84,7 @@ const ItemCtrl = (function () {
 
       data.items.push(newItem)
 
-      //   data.totalCalories = parseInt(data.totalCalories) + calories
+      StorageCtrl.storeItem(newItem)
 
       return newItem
     },
