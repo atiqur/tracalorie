@@ -14,6 +14,27 @@ const StorageCtrl = (function () {
         localStorage.setItem("items", JSON.stringify(items))
       }
     },
+    updateItemStorage: function (updatedItem) {
+      let items = StorageCtrl.getItemsFromStorage()
+      items.forEach(function (item, index) {
+        if (updatedItem.id === item.id) {
+          items.splice(index, 1, updatedItem)
+        }
+      })
+      localStorage.setItem("items", JSON.stringify(items))
+    },
+    deleteItemStorage: function (id) {
+      let items = StorageCtrl.getItemsFromStorage()
+      items.forEach(function (item, index) {
+        if (id === item.id) {
+          items.splice(index, 1)
+        }
+      })
+      localStorage.setItem("items", JSON.stringify(items))
+    },
+    clearItemFromStorage: function () {
+      localStorage.removeItem("items")
+    },
     getItemsFromStorage: function () {
       let items
 
@@ -306,6 +327,8 @@ const App = (function (ItemCtrl, UICtrl) {
 
     UICtrl.showTotalCalories(totalCalories)
 
+    StorageCtrl.updateItemStorage(updatedItem)
+
     UICtrl.clearEditState()
 
     e.preventDefault()
@@ -333,6 +356,8 @@ const App = (function (ItemCtrl, UICtrl) {
 
     UICtrl.showTotalCalories(totalCalories)
 
+    StorageCtrl.deleteItemStorage(currentItem.id)
+
     UICtrl.clearEditState()
     e.preventDefault()
   }
@@ -346,6 +371,8 @@ const App = (function (ItemCtrl, UICtrl) {
 
     UICtrl.removeAllItems()
     UICtrl.hideList()
+
+    StorageCtrl.clearItemFromStorage()
 
     e.preventDefault()
   }
